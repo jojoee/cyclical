@@ -1,0 +1,4 @@
+ignore:
+  - "cyclical/__init__.py"
+  - "cyclical/__main__.py"
+  - "setup.py"
