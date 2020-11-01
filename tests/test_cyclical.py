@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from cyclical import cyclical
 
 
@@ -11,6 +11,11 @@ def is_list_equals(actual: List[any], expected: List[any]) -> bool:
     return actual == expected
 
 
+# https://stackoverflow.com/questions/8560131/pytest-assert-almost-equal
+def almost_equal(x: Tuple[float, float], threshold=0.00001) -> bool:
+    return abs(x[0] - x[1]) < threshold
+
+
 class TestEncode:
     def test_normal_hrs(self):
         n_rows = 30
@@ -20,7 +25,7 @@ class TestEncode:
         hrs = [item % n_hrs for item in range(0, n_rows, 1)]
         encoded_hrs = cyclical.encode(hrs, n_hrs)
 
-        assert is_list_equals(
+        assert all(map(almost_equal, zip(
             encoded_hrs[0],
             [
                 0.0, 0.25881904510252074, 0.49999999999999994, 0.7071067811865476, 0.8660254037844386,
@@ -30,8 +35,8 @@ class TestEncode:
                 -0.866025403784439, -0.7071067811865477, -0.5000000000000004, -0.25881904510252157, 0.0,
                 0.25881904510252074, 0.49999999999999994, 0.7071067811865476, 0.8660254037844386, 0.9659258262890682
             ]
-        )
-        assert is_list_equals(
+        )))
+        assert all(map(almost_equal, zip(
             encoded_hrs[1],
             [
                 1.0, 0.9659258262890683, 0.8660254037844387, 0.7071067811865476, 0.5000000000000001,
@@ -42,8 +47,7 @@ class TestEncode:
                 0.8660254037844384, 0.9659258262890681, 1.0, 0.9659258262890683, 0.8660254037844387,
                 0.7071067811865476, 0.5000000000000001, 0.25881904510252096
             ]
-
-        )
+        )))
 
     def test_normal_months(self):
         n_rows = 30
@@ -53,7 +57,7 @@ class TestEncode:
         months = [item % n_months for item in list(range(0, n_rows, 1))]
         encoded_months = cyclical.encode(months, n_months)
 
-        assert is_list_equals(
+        assert all(map(almost_equal, zip(
             encoded_months[0],
             [
                 0.0, 0.49999999999999994, 0.8660254037844386, 1.0, 0.8660254037844387, 0.5000000000000003,
@@ -61,9 +65,10 @@ class TestEncode:
                 -0.5000000000000004, 0.0, 0.49999999999999994, 0.8660254037844386, 1.0, 0.8660254037844387,
                 0.5000000000000003, 1.2246467991473532e-16, -0.4999999999999997, -0.8660254037844385, -1.0,
                 -0.866025403784439, -0.5000000000000004, 0.0, 0.49999999999999994, 0.8660254037844386, 1.0,
-                0.8660254037844387, 0.5000000000000003]
-        )
-        assert is_list_equals(
+                0.8660254037844387, 0.5000000000000003
+            ]
+        )))
+        assert all(map(almost_equal, zip(
             encoded_months[1],
             [
                 1.0, 0.8660254037844387, 0.5000000000000001, 6.123233995736766e-17, -0.4999999999999998,
@@ -71,6 +76,6 @@ class TestEncode:
                 0.49999999999999933, 0.8660254037844384, 1.0, 0.8660254037844387, 0.5000000000000001,
                 6.123233995736766e-17, -0.4999999999999998, -0.8660254037844385, -1.0, -0.8660254037844388,
                 -0.5000000000000004, -1.8369701987210297e-16, 0.49999999999999933, 0.8660254037844384, 1.0,
-                0.8660254037844387, 0.5000000000000001, 6.123233995736766e-17, -0.4999999999999998, -0.8660254037844385]
-
-        )
+                0.8660254037844387, 0.5000000000000001, 6.123233995736766e-17, -0.4999999999999998, -0.8660254037844385
+            ]
+        )))
